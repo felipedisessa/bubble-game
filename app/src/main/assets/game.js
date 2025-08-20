@@ -16,8 +16,9 @@ const goalFill = document.getElementById('goalFill');
 const goalKnob = document.getElementById('goalKnob');
 const goalCountEl = document.getElementById('goalCount');
 const goalTotalEl = document.getElementById('goalTotal');
+const endTitle = document.querySelector('#endOverlay h2');
 
-const GOAL = 100; // meta "nem tão fácil nem tão difícil" para 30s
+const GOAL = 120;
 
 // ===== Helpers de visibilidade robustos =====
 const show = (el) => { el.hidden = false; el.setAttribute('aria-hidden', 'false'); };
@@ -166,10 +167,17 @@ function endGame() {
   bubbles.clear();
 
   finalScoreEl.textContent = String(score);
+
   const hs = getHighscore();
   if (score > hs) { setHighscore(score); }
   const best = Math.max(score, hs);
   highscoreTxt.textContent = `Recorde: ${best}`;
+
+  if (score >= GOAL) {
+    endTitle.textContent = "Parabéns! Você atingiu a meta! 🎉";
+  } else {
+    endTitle.textContent = "Tempo esgotado! Tente novamente...";
+  }
 
   show(endOverlay);
 }
