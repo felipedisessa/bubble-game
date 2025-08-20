@@ -1,0 +1,199 @@
+/* ===== Reset e Variáveis ===== */
+:root {
+  --bg-start: #0e2a47;
+  --bg-end: #001423;
+  --accent: #7dd3fc; /* cyan-300 */
+  --text: #e6f1ff;
+  --muted: #9fb3c8;
+  --ok: #22c55e;
+  --danger: #ef4444;
+  --shadow: 0 10px 30px rgba(0,0,0,.35);
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+/* Garante que elementos com atributo hidden realmente sumam em qualquer WebView */
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  overflow: hidden;
+
+  /* imagem de fundo + leve véu para contraste do HUD/bolhas */
+  background:
+    linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.65)),
+    url('gif_oceano.gif') center center / cover no-repeat fixed;
+  background-color: #001423; /* fallback enquanto a imagem carrega */
+
+  color: var(--text);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+}
+
+/* ===== Área do jogo ===== */
+#game {
+  position: fixed; inset: 0;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  touch-action: none; /* essencial p/ multitouch sem rolagem/zoom */
+}
+
+/* ===== HUD ===== */
+.hud {
+  position: absolute; left: 0; right: 0; top: 0; z-index: 5;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+  padding: calc(8px + env(safe-area-inset-top)) 16px 8px 16px;
+  pointer-events: none; /* HUD é clicável apenas nos botões específicos */
+  flex-wrap: wrap; /* permite quebrar para 2 linhas */
+}
+.hud .pill {
+  pointer-events: auto;
+  display: inline-flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
+  padding: 10px 14px; border-radius: 999px;
+  box-shadow: var(--shadow);
+  backdrop-filter: saturate(140%) blur(6px);
+  font-weight: 700; letter-spacing: .2px;
+}
+.hud .pill .value { font-variant-numeric: tabular-nums; min-width: 3ch; text-align: right; }
+
+/* ===== Overlays ===== */
+.overlay {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  background: linear-gradient(180deg, rgba(0,0,0,.5), rgba(0,0,0,.6));
+  z-index: 10;
+}
+.overlay[hidden] { pointer-events: none; }
+
+.card {
+  width: min(680px, 92vw); max-width: 92vw; text-align: center;
+  background: rgba(10, 20, 35, .7);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 20px; padding: 22px 20px 20px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(8px) saturate(140%);
+}
+.count-card { background: transparent; border: none; box-shadow: none; backdrop-filter: none; }
+.count-num { font-size: clamp(48px, 18vw, 150px); font-weight: 900; text-shadow: 0 10px 40px rgba(0,0,0,.5); }
+
+h1 { margin: 6px 0 10px; font-size: clamp(22px, 4.6vw, 34px); }
+.subtitle { margin: 0 0 14px; color: var(--muted); font-size: clamp(14px, 3.4vw, 18px); }
+
+.actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 14px; }
+button.btn {
+  appearance: none; border: 0; border-radius: 999px; cursor: pointer;
+  font-weight: 800; letter-spacing: .3px; color: #001423;
+  background: linear-gradient(180deg, #67e8f9, #22d3ee);
+  padding: 14px 20px; min-width: 170px; font-size: clamp(16px, 4.2vw, 18px);
+  box-shadow: 0 8px 20px rgba(34, 211, 238, .4), inset 0 2px 0 rgba(255,255,255,.6);
+  transition: transform .08s ease, filter .08s ease;
+}
+button.btn:active { transform: translateY(1px) scale(.98); filter: brightness(.95); }
+
+/* ===== Bolhas ===== */
+.bubble {
+  position: absolute; border-radius: 50%;
+  /* Aparência da bolha feita 100% em CSS */
+  background:
+    radial-gradient(120% 120% at 28% 28%, rgba(255,255,255,.95) 0 10%, rgba(255,255,255,.2) 10% 11%, rgba(255,255,255,0) 11%),
+    radial-gradient(80% 80% at 65% 60%, rgba(255,255,255,.35), rgba(255,255,255,0) 60%),
+    radial-gradient(circle at 50% 50%, rgba(125, 211, 252, .55), rgba(56, 189, 248, .28) 55%, rgba(2, 132, 199, .16) 75%, rgba(255,255,255,0) 100%);
+  box-shadow: 0 10px 20px rgba(0,0,0,.25), inset 0 -6px 18px rgba(2, 132, 199, .15);
+  border: 1px solid rgba(255,255,255,.35);
+  will-change: transform;
+  transform: translateZ(0);
+  /* Sutil efeito de escala para parecer vivo */
+  animation: float-up var(--rise, 8s) linear forwards;
+  contain: layout style paint; /* performance */
+}
+.bubble:active { filter: brightness(1.05); }
+
+/* Ao estourar */
+.bubble.popped {
+  animation: pop .16s ease-out forwards;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+@keyframes float-up {
+  from { transform: translateY(0) translateZ(0); opacity: .96; }
+  to   { transform: translateY(-120vh) translateZ(0); opacity: 1; }
+}
+@keyframes pop {
+  0%   { transform: scale(1); opacity: 1; }
+  80%  { transform: scale(1.35); opacity: .15; filter: saturate(160%); }
+  100% { transform: scale(.6); opacity: 0; }
+}
+
+/* ===== Preferência do usuário ===== */
+@media (prefers-reduced-motion: reduce) {
+  .bubble { animation-duration: 0s; }
+}
+
+/* ===== Barra de Progresso da Meta ===== */
+.goal-wrap {
+  order: 2;               /* vai para a linha de baixo no HUD */
+  width: 100%;
+  margin-top: 8px;        /* espaçamento elegante da primeira linha do HUD */
+  display: grid;
+  gap: 6px;
+}
+
+.goal-head {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 800;
+  color: #ffe08a;
+  text-shadow: 0 2px 10px rgba(0,0,0,.35);
+}
+
+.goal-bar {
+  position: relative;
+  height: 18px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(0,0,0,.2));
+  border: 1px solid rgba(255,255,255,.12);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.goal-fill {
+  position: absolute;
+  inset: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform .18s ease-out;
+  /* “suco” visual tipo UI de jogo */
+  background:
+    radial-gradient(50% 100% at 50% 0%, rgba(255,255,255,.25), rgba(255,255,255,0) 60%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,.12) 0 8px, rgba(255,255,255,0) 8px 16px),
+    linear-gradient(180deg, #8bff9c, #22c55e);
+}
+
+.goal-knob {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 26px; height: 26px;
+  display: grid; place-items: center;
+  font-size: 16px; line-height: 1;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #ffd166, #f59e0b);
+  border: 1px solid rgba(0,0,0,.25);
+  box-shadow: 0 6px 14px rgba(0,0,0,.35), inset 0 2px 0 rgba(255,255,255,.6);
+  pointer-events: none; /* decorativo */
+}
+
+/* ===== Placar final ===== */
+.final h2 { margin: 8px 0 6px; font-size: clamp(20px, 4.4vw, 28px); }
+.final .score {
+  font-size: clamp(32px, 10vw, 56px);
+  font-weight: 900; letter-spacing: .6px; color: #67e8f9;
+  text-shadow: 0 8px 28px rgba(103,232,249,.4);
+}
+.final .highscore { color: var(--muted); margin-top: 6px; }
+
+/* ===== Rodapé de créditos/ajuda ===== */
+.foot { margin-top: 10px; font-size: 12px; color: #9fb3c8; opacity: .9; }
