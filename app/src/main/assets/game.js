@@ -18,14 +18,14 @@ const goalCountEl = document.getElementById('goalCount');
 const goalTotalEl = document.getElementById('goalTotal');
 const endTitle = document.querySelector('#endOverlay h2');
 
-const GOAL = 100;
+const GOAL = 110;
 
 // ===== Helpers de visibilidade robustos =====
 const show = (el) => { el.hidden = false; el.setAttribute('aria-hidden', 'false'); };
 const hide = (el) => { el.hidden = true; el.setAttribute('aria-hidden', 'true'); };
 
 // ===== Constantes de jogo =====
-const DURATION_MS = 30_000;
+const DURATION_MS = 35_000;
 const MAX_ACTIVE_BUBBLES = 40;
 const MIN_SIZE = 56;
 const MAX_SIZE = 130;
