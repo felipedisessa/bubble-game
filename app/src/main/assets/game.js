@@ -18,7 +18,7 @@ const goalCountEl = document.getElementById('goalCount');
 const goalTotalEl = document.getElementById('goalTotal');
 const endTitle = document.querySelector('#endOverlay h2');
 
-const GOAL = 120;
+const GOAL = 100;
 
 // ===== Helpers de visibilidade robustos =====
 const show = (el) => { el.hidden = false; el.setAttribute('aria-hidden', 'false'); };
@@ -26,11 +26,13 @@ const hide = (el) => { el.hidden = true; el.setAttribute('aria-hidden', 'true');
 
 // ===== Constantes de jogo =====
 const DURATION_MS = 30_000;
-const MAX_ACTIVE_BUBBLES = 40; // limite de segurança p/ performance
-const MIN_SIZE = 56;   // px
-const MAX_SIZE = 130;  // px
-const MIN_RISE = 5.5;  // s
-const MAX_RISE = 10;   // s
+const MAX_ACTIVE_BUBBLES = 40;
+const MIN_SIZE = 56;
+const MAX_SIZE = 130;
+
+// ↓ Deixe a subida mais rápida
+const MIN_RISE = 3.0;  // antes: 5.5s
+const MAX_RISE = 6.0;
 
 // ===== Estado =====
 let rafId = 0, running = false, deadlineAt = 0, score = 0;

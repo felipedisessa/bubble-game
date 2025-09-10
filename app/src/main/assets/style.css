@@ -21,7 +21,7 @@ body {
   /* imagem de fundo + leve véu para contraste do HUD/bolhas */
   background:
     linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.65)),
-    url('gif_oceano.gif') center center / cover no-repeat fixed;
+    url('oceano.jpeg') center center / cover no-repeat fixed;
   background-color: #001423; /* fallback enquanto a imagem carrega */
 
   color: var(--text);
@@ -197,3 +197,40 @@ button.btn:active { transform: translateY(1px) scale(.98); filter: brightness(.9
 
 /* ===== Rodapé de créditos/ajuda ===== */
 .foot { margin-top: 10px; font-size: 12px; color: #9fb3c8; opacity: .9; }
+
+/* ===== Rodapé com marcas ===== */
+.brand-footer {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  z-index: 6; /* Overlays usam 10; aumenta p/ 11 se quiser ver por cima das telas de início/fim */
+  display: flex; align-items: center; justify-content: center;
+
+  /* Respeita notch/safe area */
+  padding: 6px 10px calc(8px + env(safe-area-inset-bottom));
+
+  /* Não bloqueia toques nas bolhas */
+  pointer-events: none;
+
+  /* Leve gradiente para legibilidade sobre qualquer fundo */
+  background: linear-gradient(180deg,
+              rgba(0,0,0,0) 0%,
+              rgba(0,0,0,.22) 30%,
+              rgba(0,0,0,.46) 100%);
+}
+
+.brand-footer img {
+  /* Altura responsiva, mantendo proporção da faixa */
+  height: clamp(22px, 6vh, 64px);
+  max-width: 96vw;
+  object-fit: contain;
+
+  /* Realce sutil */
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,.35));
+  opacity: .95;
+}
+
+/* Se precisar que os links sejam clicáveis no rodapé:
+   adicione .brand-footer--clickable na <footer> e habilite os eventos */
+.brand-footer.brand-footer--clickable { pointer-events: auto; }
+.brand-footer.brand-footer--clickable a { display: inline-flex; align-items: center; }
+.brand-footer { z-index: 11; }
