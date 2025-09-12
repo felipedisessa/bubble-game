@@ -252,3 +252,89 @@ button.btn:active { transform: translateY(1px) scale(.98); filter: brightness(.9
   50% { text-shadow: 0 0 14px rgba(255, 223, 100, 0.9); }
   100% { text-shadow: 0 0 6px rgba(255, 215, 0, 0.6); }
 }
+
+/* ===== Card do desenvolvedor + QR ===== */
+/* ===== Card do desenvolvedor (compacto) ===== */
+.dev-card {
+  /* menos "largura visual": centra e limita o tamanho */
+  max-width: min(360px, 92%);
+  margin: 12px auto 0;
+
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 12px;
+
+  /* padding menor */
+  padding: 10px 12px;
+
+  /* sombra igual ao restante para manter o look */
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(6px) saturate(140%);
+}
+
+.dev-left {
+  display: grid;
+  gap: 2px;        /* menos respiro vertical */
+  min-width: 0;
+  line-height: 1.15;
+}
+
+.dev-title {
+  font-size: clamp(11px, 2.8vw, 12px);  /* -1px */
+  color: var(--muted);
+  letter-spacing: .2px;
+}
+
+.dev-name {
+  font-size: clamp(15px, 3.8vw, 17px);  /* -1px */
+  font-weight: 800;
+  letter-spacing: .2px;
+}
+
+.dev-link {
+  font-size: clamp(11px, 2.8vw, 13px);  /* -1px */
+  color: var(--accent);
+  text-decoration: none;
+  word-break: break-word;
+}
+.dev-link:hover { text-decoration: underline; }
+
+.dev-qr-wrap {
+  display: inline-grid;
+  place-items: center;
+
+  /* QR um pouco menor */
+  width: clamp(96px, 20vw, 96px);
+  height: clamp(96px, 20vw, 96px);
+
+  background: rgba(255,255,255,.92);
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,.14);
+  box-shadow: 0 5px 14px rgba(0,0,0,.22);
+  pointer-events: auto;
+  overflow: hidden;
+}
+
+.dev-qr-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* Em telas bem estreitas, empilha e reduz ainda mais o espaço */
+@media (max-width: 420px) {
+  .dev-card {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+  }
+  .dev-left { text-align: center; }
+  .dev-qr-wrap { margin-top: 4px; }
+}

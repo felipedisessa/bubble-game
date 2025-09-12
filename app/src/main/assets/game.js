@@ -225,3 +225,48 @@ if (hsInit > 0) {
   hint.textContent = `Recorde atual neste dispositivo: ${hsInit}`;
   startOverlay.querySelector('.card').appendChild(hint);
 }
+
+// ===== QR Code do card "Desenvolvido por Neotech Solucoes" =====
+(function renderDevQR() {
+  const url = 'https://www.neotechsolucoes.com';
+  const canvas = document.getElementById('devQr');
+  if (!canvas) return;
+
+  // Se a lib de QR não estiver disponível, não quebra o jogo
+  if (typeof QRCode === 'undefined' || !QRCode.toCanvas) {
+    // fallback visual mínimo: desenha um quadrado com um texto
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#000';
+    ctx.font = '12px system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('QR indisponível', canvas.width/2, canvas.height/2);
+    return;
+  }
+
+  // Gera QR com alto contraste e margem adequada para scanners
+  QRCode.toCanvas(canvas, url, {
+    errorCorrectionLevel: 'M',  // bom equilíbrio entre robustez e densidade
+    margin: 2,                  // quiet zone mínima
+    scale: 6,                   // densidade para 120x120
+    color: {
+      dark: '#000000',
+      light: '#FFFFFF'
+    }
+  }, (err) => {
+    if (err) {
+      // fallback simples em caso de erro
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#000';
+      ctx.font = '12px system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('Erro ao gerar QR', canvas.width/2, canvas.height/2);
+    }
+  });
+})();
+
